@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghostfolio Token Radar — Kiroween 2026</title>
+<meta name="description" content="Frankenstein: a DeFi token radar stitched to a Halloween trick-or-treat game and a 60-second prediction market. Built with Kiro for Kiroween 2026.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="hero-ghosts" aria-hidden="true"><span>👻</span><span>🎃</span><span>👻</span></div>
+  <h1>Ghostfolio <span class="accent">Token Radar</span></h1>
+  <p class="tagline">A Frankenstein: serious DeFi radar + trick-or-treat game + 60-second prediction market — stitched together, alive, and slightly haunted.</p>
+  <div class="wallet-bar" id="walletBar">
+    <span>🪙 Ghost Coins: <strong id="balance">1,000</strong></span>
+    <span>🔥 Streak: <strong id="streak">0</strong></span>
+    <span>🏠 Houses visited today: <strong id="visitedCount">0</strong></span>
+    <button id="resetWallet" class="btn small ghost-btn" title="Reset wallet to 1,000 Ghost Coins">Reset wallet</button>
+  </div>
+  <p class="data-note" id="dataNote">Loading live data from DefiLlama…</p>
+</header>
+
+<main>
+  <!-- Kiro Crew ghost agents -->
+  <section class="ghosts" aria-label="Kiro Crew ghost agents">
+    <h2>🧑‍🤝‍🧑 Kiro Crew — your ghost agents</h2>
+    <div class="ghost-cards">
+      <article class="ghost-card" id="card-radar">
+        <div class="ghost-face">👻</div>
+        <h3>Radar Ghost</h3>
+        <p class="role">Watches TVL &amp; Ghost Scores</p>
+        <p class="tip" id="tip-radar">Boo! I rank every protocol by TVL vs market cap.</p>
+        <button class="btn small" data-ghost="radar">Ask Radar Ghost</button>
+      </article>
+      <article class="ghost-card" id="card-treat">
+        <div class="ghost-face">🎃</div>
+        <h3>Treat Ghost</h3>
+        <p class="role">Runs trick-or-treat</p>
+        <p class="tip" id="tip-treat">Knock on a house below — treats pay 10–50 coins!</p>
+        <button class="btn small" data-ghost="treat">Ask Treat Ghost</button>
+      </article>
+      <article class="ghost-card" id="card-oracle">
+        <div class="ghost-face">🔮</div>
+        <h3>Oracle Ghost</h3>
+        <p class="role">Calls the Ghost Hour markets</p>
+        <p class="tip" id="tip-oracle">I see prices move… 60 seconds is all it takes.</p>
+        <button class="btn small" data-ghost="oracle">Ask Oracle Ghost</button>
+      </article>
+    </div>
+  </section>
+
+  <!-- Radar -->
+  <section class="radar" aria-label="Token radar">
+    <h2>📡 Token Radar <span class="sub">live TVL from DefiLlama</span></h2>
+    <div class="controls">
+      <input id="search" type="search" placeholder="Search a protocol… (e.g. Aave)" aria-label="Search protocols">
+      <select id="sortBy" aria-label="Sort by">
+        <option value="tvl">Sort: TVL ↓</option>
+        <option value="score">Sort: Ghost Score ↓</option>
+        <option value="mcap">Sort: Market cap ↓</option>
+        <option value="change">Sort: 24h change ↓</option>
+      </select>
+      <select id="labelFilter" aria-label="Filter by label">
+        <option value="">All labels</option>
+        <option value="FARM">FARM</option>
+        <option value="FARM SMALL">FARM SMALL</option>
+        <option value="WATCH ONLY">WATCH ONLY</option>
+      </select>
+      <select id="chainFilter" aria-label="Filter by chain">
+        <option value="">All chains</option>
+      </select>
+    </div>
+    <p class="formula">Ghost Score: log₁₀(mcap) ≈ 6.965 + 0.522 × log₁₀(TVL). Undervalued vs TVL → high score. ≥65 FARM · 55–64 FARM SMALL · &lt;55 WATCH ONLY.</p>
+    <div class="table-wrap">
+      <table id="radarTable">
+        <thead><tr><th>#</th><th>Protocol</th><th>TVL</th><th>Market cap</th><th>Ghost Score</th><th>Label</th><th>24h</th><th></th></tr></thead>
+        <tbody id="radarBody"><tr><td colspan="8">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="count" id="radarCount"></p>
+  </section>
+
+  <!-- Detail panel -->
+  <section class="detail" id="detailPanel" aria-label="Protocol detail" hidden>
+    <h2 id="detailName">Protocol</h2>
+    <div id="detailBody"></div>
+    <div class="detail-actions">
+      <button id="treatBtn" class="btn treat">🎃 Trick-or-Treat this house</button>
+      <button id="dailyBtn" class="btn">📅 Pick as tomorrow's top gainer</button>
+    </div>
+    <p class="detail-msg" id="detailMsg"></p>
+  </section>
+
+  <!-- Prediction -->
+  <section class="predict" aria-label="Prediction markets">
+    <h2>🔮 Ghost Hour — 60-second markets</h2>
+    <p>Live prices from CoinGecko, polled every 30s. Pick a coin, a direction and a stake. Entry price locks when you bet; after 60 seconds the market resolves. Win pays <strong>1.9×</strong> your stake. Unchanged price refunds your stake.</p>
+    <div class="prices" id="prices"><p>Loading prices…</p></div>
+    <div class="bet-form">
+      <select id="betCoin" aria-label="Coin"><option value="solana">SOL</option><option value="bitcoin">BTC</option><option value="ethereum">ETH</option></select>
+      <select id="betDir" aria-label="Direction"><option value="up">⬆ UP in 60s</option><option value="down">⬇ DOWN in 60s</option></select>
+      <select id="betStake" aria-label="Stake"><option value="10">10 coins</option><option value="25">25 coins</option><option value="50" selected>50 coins</option><option value="100">100 coins</option></select>
+      <button id="betBtn" class="btn primary">Place bet</button>
+    </div>
+    <p class="bet-status" id="betStatus">No active market. Your Ghost Coins are safe… for now.</p>
+    <div class="bets-log"><h3>Recent markets</h3><ul id="betsLog"><li>None yet — place your first bet, if you dare.</li></ul></div>
+
+    <h2>📅 Daily market — tomorrow's top TVL gainer</h2>
+    <p>Pick one protocol (from the detail panel). If it posts the biggest 24h TVL gain tomorrow, you win <strong>2×</strong> your 25-coin stake. Resolution date is shown — this market stays open, it is not faked as resolved.</p>
+    <p class="daily-status" id="dailyStatus">No daily pick yet. Choose a protocol above and press “Pick as tomorrow's top gainer”.</p>
+    <button id="checkDailyBtn" class="btn small">Check yesterday's pick</button>
+    <p class="daily-msg" id="dailyMsg"></p>
+  </section>
+</main>
+
+<footer>
+  <p>Ghostfolio Token Radar — Kiroween 2026, Frankenstein category. Built with Kiro (see <a href="KIRO_USAGE.md">KIRO_USAGE.md</a>). Data: DefiLlama (TVL/mcap, no key) + CoinGecko (prices, no key). Ghost Coins are virtual — no real money, no real crypto. <a href="README.md">README</a> · Apache-2.0</p>
+</footer>
+
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
