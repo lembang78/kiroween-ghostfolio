@@ -8,6 +8,7 @@ Two JS layers: `logic.js` (pure, tested) and `app.js` (browser I/O).
 
 ### logic.js (pure, UMD)
 - `ghostScore(tvl, mcap)` — power-law residual score, see steering/tech.md.
+  TVL is in dollars as input; the formula converts to $M internally.
 - `labelForScore(score)` — FARM / FARM SMALL / WATCH ONLY thresholds.
 - `treatOrTrick(rng)` — injectable RNG so tests can seed it.
 - `resolveGhostHour(entry, exit, direction, stake)` — 1.9× / refund / 0.

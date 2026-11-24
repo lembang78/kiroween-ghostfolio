@@ -5,7 +5,9 @@
  *
  * Ghost Score formula (adapted as an IDEA only from Roby's earlier radar work;
  * no code was copied): a power-law fit of log market-cap vs log TVL,
- *   log10(mcap) ~= 6.965 + 0.522 * log10(tvl)
+ * with TVL measured in MILLIONS of USD (the fit's unit — using raw dollars
+ * inflates the implied mcap ~1,350x and saturates every score at 100):
+ *   log10(mcap) ~= 6.965 + 0.522 * log10(tvl / 1e6)
  * A protocol whose actual mcap is far BELOW the TVL-implied mcap is
  * "undervalued vs its TVL" and scores high.
  */
@@ -18,7 +20,8 @@
 
   function predictedMcap(tvl) {
     if (!tvl || tvl <= 0) return null;
-    return Math.pow(10, FORMULA.intercept + FORMULA.slope * Math.log10(tvl));
+    // TVL in millions of USD — the unit the power-law fit was made in.
+    return Math.pow(10, FORMULA.intercept + FORMULA.slope * Math.log10(tvl / 1e6));
   }
 
   // score 0..100. Fixed mcap: score rises as TVL rises (predicted mcap rises,
@@ -31,8 +34,7 @@
       return { score: 50, label: 'WATCH ONLY', ratio: null, predictedMcap: pred, hasMcap: false };
     }
     var ratio = mcap / pred;
-    var score = clamp(50 - 25 * Math.log10(ratio), 0, 100);
-    score = Math.round(score * 10) / 10;
+    var score = clamp(50 - 25 * Math.log10(ratio), 0, 100);    score = Math.round(score * 10) / 10;
     return { score: score, label: labelForScore(score), ratio: ratio, predictedMcap: pred, hasMcap: true };
   }
 
@@ -113,12 +115,12 @@
   var SAMPLE_PROTOCOLS = [
     { name: 'Lido', slug: 'lido', tvl: 30000000000, mcap: 1100000000, category: 'Liquid Staking', chains: ['Ethereum'], change_1d: 1.2 },
     { name: 'Aave', slug: 'aave', tvl: 25000000000, mcap: 3200000000, category: 'Lending', chains: ['Ethereum', 'Arbitrum'], change_1d: 0.8 },
-    { name: 'EigenLayer', slug: 'eigenlayer', tvl: 12000000000, mcap: 900000000, category: 'Restaking', chains: ['Ethereum'], change_1d: -0.5 },
+    { name: 'EigenLayer', slug: 'eigenlayer', tvl: 12000000000, mcap: 300000000, category: 'Restaking', chains: ['Ethereum'], change_1d: -0.5 },
     { name: 'Uniswap', slug: 'uniswap', tvl: 5000000000, mcap: 4200000000, category: 'DEX', chains: ['Ethereum', 'Arbitrum', 'Base'], change_1d: 2.1 },
     { name: 'Sky (Maker)', slug: 'sky', tvl: 5000000000, mcap: 1500000000, category: 'CDP', chains: ['Ethereum'], change_1d: 0.3 },
     { name: 'Ethena', slug: 'ethena', tvl: 6000000000, mcap: 1800000000, category: 'Yield', chains: ['Ethereum'], change_1d: 3.4 },
     { name: 'Jupiter', slug: 'jupiter', tvl: 2200000000, mcap: 1300000000, category: 'DEX Aggregator', chains: ['Solana'], change_1d: -1.1 },
-    { name: 'Kamino', slug: 'kamino', tvl: 1800000000, mcap: 250000000, category: 'Lending', chains: ['Solana'], change_1d: 4.2 },
+    { name: 'Kamino', slug: 'kamino', tvl: 1800000000, mcap: 80000000, category: 'Lending', chains: ['Solana'], change_1d: 4.2 },
     { name: 'Pendle', slug: 'pendle', tvl: 3500000000, mcap: 800000000, category: 'Yield', chains: ['Ethereum', 'Arbitrum'], change_1d: 1.7 },
     { name: 'Morpho', slug: 'morpho', tvl: 4000000000, mcap: 600000000, category: 'Lending', chains: ['Ethereum', 'Base'], change_1d: 0.9 },
     { name: 'Pump.fun', slug: 'pump', tvl: 120000000, mcap: 900000000, category: 'Launchpad', chains: ['Solana'], change_1d: -2.3 },

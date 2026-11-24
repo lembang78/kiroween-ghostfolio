@@ -156,7 +156,7 @@
       '<strong>Ghost Score:</strong> ' + p.score.toFixed(1) + ' / 100 &nbsp; <strong>TVL-implied mcap:</strong> ' + L.fmtUSD(p.predictedMcap) +
       (p.ratio ? ' &nbsp; <strong>mcap ÷ implied:</strong> ' + p.ratio.toFixed(2) + '×' : '') + '<br>' +
       '<strong>Category:</strong> ' + esc(p.category) + ' &nbsp; <strong>Chains:</strong> ' + esc(p.chains.join(', ')) + '<br>' +
-      'Formula: log₁₀(mcap) ≈ 6.965 + 0.522 × log₁₀(TVL). ' +
+      'Formula: log₁₀(mcap) ≈ 6.965 + 0.522 × log₁₀(TVL in $M). ' +
       (p.score >= 65 ? 'This house is undervalued vs its TVL — the Radar Ghost likes it.' :
        p.score >= 55 ? 'Mildly undervalued vs its TVL — worth a knock.' :
        'Fairly valued or overvalued vs its TVL — knock anyway, treats are random.') + '</p>';

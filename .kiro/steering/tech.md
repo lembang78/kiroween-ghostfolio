@@ -20,8 +20,9 @@
   the exact code the browser runs.
 
 ## Ghost Score
-- Formula: `log10(mcap) ≈ 6.965 + 0.522 × log10(TVL)`.
-- `ratio = mcap / 10^(6.965 + 0.522×log10(TVL))`,
+- Formula: `log10(mcap) ≈ 6.965 + 0.522 × log10(TVL in $M)` (TVL in millions
+  of USD — the fit's unit).
+- `ratio = mcap / 10^(6.965 + 0.522×log10(TVL / 1e6))`,
   `score = clamp(50 − 25×log10(ratio), 0, 100)`.
 - Labels: ≥65 FARM, 55–64 FARM SMALL, <55 WATCH ONLY.
 - Missing mcap → score 50, WATCH ONLY, flagged in the UI.

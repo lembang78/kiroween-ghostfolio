@@ -20,7 +20,8 @@ static site with no build step.
 
 ### Ghost Score
 - WHEN a protocol has TVL and market cap, THE SYSTEM SHALL compute
-  `score = clamp(50 − 25×log10(mcap / 10^(6.965 + 0.522×log10(TVL))), 0, 100)`.
+  `score = clamp(50 − 25×log10(mcap / 10^(6.965 + 0.522×log10(TVL in $M))), 0, 100)`
+  where TVL is measured in millions of USD.
 - WHEN the market cap is missing, THE SYSTEM SHALL score 50, label
   WATCH ONLY and SHALL say the market cap was not reported.
 - WHEN the score is ≥65, THE SYSTEM SHALL label the protocol FARM;

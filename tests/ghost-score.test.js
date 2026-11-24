@@ -149,3 +149,21 @@ test('fmtUSD', () => {
   assert.equal(L.fmtUSD(1500000), '$1.5M');
   assert.equal(L.fmtUSD(null), 'n/a');
 });
+
+// 12. Regression: known protocols score in the expected band.
+// TVL is in dollars; the formula converts to $M internally.
+// Lido ($30B TVL, $1.1B mcap) is mildly undervalued -> FARM SMALL (~56.5).
+// Pump.fun ($120M TVL, $900M mcap) is overvalued vs TVL -> WATCH ONLY (~27).
+test('known protocol scores (regression)', () => {
+  const lido = L.ghostScore(30000000000, 1100000000);
+  assert.equal(lido.label, 'FARM SMALL');
+  assert.ok(lido.score > 55 && lido.score < 58, `lido score ${lido.score}`);
+  const pump = L.ghostScore(120000000, 900000000);
+  assert.equal(pump.label, 'WATCH ONLY');
+  assert.ok(pump.score > 25 && pump.score < 30, `pump score ${pump.score}`);
+  // Sample data must contain all three labels (not a skewed fallback).
+  const labels = new Set(L.SAMPLE_PROTOCOLS.map(p => L.ghostScore(p.tvl, p.mcap).label));
+  assert.ok(labels.has('FARM'), 'sample has a FARM');
+  assert.ok(labels.has('FARM SMALL'), 'sample has a FARM SMALL');
+  assert.ok(labels.has('WATCH ONLY'), 'sample has a WATCH ONLY');
+});

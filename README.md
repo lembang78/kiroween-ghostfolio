@@ -33,8 +33,8 @@ node --test tests/ghost-score.test.js   # 11 property tests, all passing
 Adapted as an **idea only** from an earlier radar concept (no code copied):
 
 ```
-log10(mcap) ≈ 6.965 + 0.522 × log10(TVL)
-ratio  = mcap / 10^(6.965 + 0.522 × log10(TVL))
+log10(mcap) ≈ 6.965 + 0.522 × log10(TVL in $M)
+ratio  = mcap / 10^(6.965 + 0.522 × log10(TVL in $M))
 score  = clamp(50 − 25 × log10(ratio), 0, 100)
 ```
 
